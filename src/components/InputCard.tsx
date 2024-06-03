@@ -68,17 +68,7 @@ const InputCard = () => {
               Add Card
             </button>
           </div>
-          {/* <div className="flex flex-wrap gap-4 justify-center">
-            {cards.map((item) => (
-              <InputCard
-                key={item.id}
-                id={item.id}
-                title={item.title}
-                note={item.note}
-                onRemove={handleRemoveCard}
-              />
-            ))}
-          </div> */}
+       
         </CardContent>
       </Card>
     </div>
