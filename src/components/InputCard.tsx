@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, KeyboardEvent, ChangeEvent } from "react";
 import {
   Card,
   CardContent,
@@ -7,14 +7,19 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-// Parent component
-const InputCard = () => {
-  const [cards, setCards] = useState([]);
-  const [title, setTitle] = useState("");
-  const [note, setNote] = useState("");
+interface CardItem {
+  id: number;
+  title: string;
+  note: string;
+}
+
+const InputCard: React.FC = () => {
+  const [cards, setCards] = useState<CardItem[]>([]);
+  const [title, setTitle] = useState<string>("");
+  const [note, setNote] = useState<string>("");
 
   useEffect(() => {
-    const savedCards = JSON.parse(localStorage.getItem("cards")) || [];
+    const savedCards: CardItem[] = JSON.parse(localStorage.getItem("cards") || "[]");
     setCards(savedCards);
   }, []);
 
@@ -23,7 +28,7 @@ const InputCard = () => {
       alert("Please enter both a title and a note.");
       return;
     }
-    const newCard = { id: Date.now(), title, note };
+    const newCard: CardItem = { id: Date.now(), title, note };
     const updatedCards = [...cards, newCard];
     setCards(updatedCards);
     localStorage.setItem("cards", JSON.stringify(updatedCards));
@@ -31,14 +36,22 @@ const InputCard = () => {
     setNote("");
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleAddCard();
     }
   };
 
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const handleNoteChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setNote(e.target.value);
+  };
+
   return (
-    <div className="p-4 flex justify-center items-center min-h-1/3 bg-gray-100 ">
+    <div className="p-4 flex justify-center items-center min-h-1/3 bg-gray-100">
       <Card className="w-full max-w-5xl shadow-lg rounded-lg p-6 bg-white">
         <CardHeader className="mb-4">
           <CardTitle className="text-3xl font-bold text-center">
@@ -50,14 +63,14 @@ const InputCard = () => {
             <Input
               placeholder="Title..."
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={handleTitleChange}
               onKeyDown={handleKeyDown}
               className="p-2 border border-gray-300 rounded mb-2 focus:outline-none"
             />
             <Input
               placeholder="Take a note..."
               value={note}
-              onChange={(e) => setNote(e.target.value)}
+              onChange={handleNoteChange}
               onKeyDown={handleKeyDown}
               className="p-2 border border-gray-300 rounded mb-2 focus:outline-none"
             />
@@ -68,7 +81,6 @@ const InputCard = () => {
               Add Card
             </button>
           </div>
-       
         </CardContent>
       </Card>
     </div>
